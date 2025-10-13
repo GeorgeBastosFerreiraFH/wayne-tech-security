@@ -250,7 +250,7 @@ function PaginaInventario() {
   const [itensInventario, setItensInventario] = useState([])
 
   const podeGerenciar =
-    usuario?.nivel === "admin" && (usuario?.nome === "Bruce Wayne" || usuario?.nome === "Alfred Pennyworth")
+    usuario?.nivel === "gerente" || usuario?.nivel === "admin" 
 
   useEffect(() => {
     const itensSalvos = localStorage.getItem("waynetech_inventario")
