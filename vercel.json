@@ -4,7 +4,35 @@
   "devCommand": "npm run dev",
   "installCommand": "npm install",
   "framework": "vite",
+  "headers": [
+    {
+      "source": "/modelos3d/(.*)",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "model/gltf-binary"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/(.*\\.hdr)",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/octet-stream"
+        }
+      ]
+    }
+  ],
   "rewrites": [
+    {
+      "source": "/modelos3d/(.*)",
+      "destination": "/modelos3d/$1"
+    },
     {
       "source": "/(.*)",
       "destination": "/index.html"
