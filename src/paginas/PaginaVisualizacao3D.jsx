@@ -16,6 +16,10 @@ const Container = styled.div`
 
 const Cabecalho = styled.div`
   margin-bottom: 2rem;
+
+  @media (max-width: 768px) {
+    margin-bottom: 1.5rem;
+  }
 `
 
 const Titulo = styled.h1`
@@ -26,23 +30,65 @@ const Titulo = styled.h1`
   align-items: center;
   gap: 0.75rem;
   margin-bottom: 0.5rem;
+
+  @media (max-width: 768px) {
+    font-size: 1.5rem;
+    
+    svg {
+      width: 24px;
+      height: 24px;
+    }
+  }
 `
 
 const Subtitulo = styled.p`
   color: var(--cor-texto-secundario);
   font-size: 1rem;
+
+  @media (max-width: 768px) {
+    font-size: 0.9rem;
+  }
 `
 
 const ConteudoPrincipal = styled.div`
   display: grid;
   grid-template-columns: 300px 1fr;
   gap: 2rem;
+
+  @media (max-width: 1024px) {
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 1.5rem;
+  }
 `
 
 const PainelLateral = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1rem;
+
+  @media (max-width: 1024px) {
+    flex-direction: row;
+    overflow-x: auto;
+    overflow-y: hidden;
+    gap: 0.75rem;
+    padding: 0.5rem 0;
+    
+    /* Estilização da scrollbar */
+    &::-webkit-scrollbar {
+      height: 6px;
+    }
+    
+    &::-webkit-scrollbar-track {
+      background: rgba(0, 212, 255, 0.1);
+      border-radius: 3px;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+      background: var(--cor-neon-azul);
+      border-radius: 3px;
+    }
+  }
 `
 
 const CardModelo = styled(motion.div)`
@@ -57,17 +103,36 @@ const CardModelo = styled(motion.div)`
     border-color: var(--cor-neon-azul);
     box-shadow: var(--sombra-neon-azul);
   }
+
+  @media (max-width: 1024px) {
+    min-width: 200px;
+    padding: 1rem;
+    flex-shrink: 0;
+  }
+
+  @media (max-width: 480px) {
+    min-width: 160px;
+    padding: 0.875rem;
+  }
 `
 
 const NomeModelo = styled.div`
   color: var(--cor-texto-primario);
   font-weight: 600;
   margin-bottom: 0.25rem;
+
+  @media (max-width: 768px) {
+    font-size: 0.9rem;
+  }
 `
 
 const CategoriaModelo = styled.div`
   color: var(--cor-texto-terciario);
   font-size: 0.85rem;
+
+  @media (max-width: 768px) {
+    font-size: 0.75rem;
+  }
 `
 
 const AreaVisualizacao = styled.div`
@@ -92,6 +157,19 @@ const AreaVisualizacao = styled.div`
     pointer-events: none;
     z-index: 1;
   }
+
+  @media (max-width: 1024px) {
+    height: 500px;
+  }
+
+  @media (max-width: 768px) {
+    height: 400px;
+    border-radius: 8px;
+  }
+
+  @media (max-width: 480px) {
+    height: 350px;
+  }
 `
 
 const InfoModelo = styled.div`
@@ -104,6 +182,15 @@ const InfoModelo = styled.div`
   border-radius: 8px;
   z-index: 10;
   backdrop-filter: blur(10px);
+  max-width: 300px;
+
+  @media (max-width: 768px) {
+    top: 1rem;
+    left: 1rem;
+    right: 1rem;
+    max-width: none;
+    padding: 0.75rem 1rem;
+  }
 `
 
 const TituloInfo = styled.div`
@@ -111,12 +198,22 @@ const TituloInfo = styled.div`
   font-family: var(--fonte-titulo);
   font-size: 1.1rem;
   margin-bottom: 0.5rem;
+
+  @media (max-width: 768px) {
+    font-size: 0.95rem;
+    margin-bottom: 0.25rem;
+  }
 `
 
 const TextoInfo = styled.div`
   color: var(--cor-texto-secundario);
   font-size: 0.85rem;
   line-height: 1.5;
+
+  @media (max-width: 768px) {
+    font-size: 0.75rem;
+    line-height: 1.4;
+  }
 `
 
 const Controles = styled.div`
@@ -126,6 +223,12 @@ const Controles = styled.div`
   display: flex;
   gap: 0.75rem;
   z-index: 10;
+
+  @media (max-width: 768px) {
+    bottom: 1rem;
+    right: 1rem;
+    gap: 0.5rem;
+  }
 `
 
 const BotaoControle = styled(motion.button)`
@@ -146,10 +249,25 @@ const BotaoControle = styled(motion.button)`
     background: rgba(0, 212, 255, 0.2);
     box-shadow: var(--sombra-neon-azul);
   }
+
+  @media (max-width: 768px) {
+    width: 44px;
+    height: 44px;
+
+    svg {
+      width: 20px;
+      height: 20px;
+    }
+  }
+`
+
+const Carregando = styled.div`
+  color: var(--cor-neon-azul);
+  font-size: 1.2rem;
+  text-align: center;
 `
 
 function ModeloGLB({ caminho }) {
-  // useGLTF lida com o cache automaticamente, o que é bom
   const { scene } = useGLTF(caminho)
   return <primitive object={scene} />
 }
@@ -157,10 +275,8 @@ function ModeloGLB({ caminho }) {
 function PaginaVisualizacao3D() {
   const { usuario } = useAutenticacao()
   const [modeloSelecionado, setModeloSelecionado] = useState(0)
-  // boundsRef não é mais necessário, mas o deixarei caso você o utilize em outro lugar
-  const orbitControlsRef = useRef() 
+  const orbitControlsRef = useRef()
 
-  // Função simplificada: Agora só reseta o OrbitControls, pois o Bounds reseta com a 'key'
   const resetarVisualizacao = () => {
     if (orbitControlsRef.current) {
       orbitControlsRef.current.reset()
@@ -180,10 +296,8 @@ function PaginaVisualizacao3D() {
     return nivelUsuario >= nivelModelo
   })
 
-  // Usamos modeloAtual.id para a key, então garantimos que ele exista antes de tentar acessá-lo
   const modeloAtual = modelosDisponiveis[modeloSelecionado] || modelosDisponiveis[0]
 
-  // Se não houver modelos disponíveis, mostramos uma mensagem de erro ou retornamos null
   if (!modeloAtual) {
     return <Container>Nenhum modelo 3D disponível para seu nível de acesso.</Container>
   }
@@ -204,10 +318,7 @@ function PaginaVisualizacao3D() {
             <CardModelo
               key={modelo.id}
               $ativo={modeloSelecionado === index}
-              // AÇÃO CORRIGIDA: Adiciona o clique para mudar o estado e, consequentemente, o modelo
-              onClick={() => {
-                setModeloSelecionado(index)
-              }}
+              onClick={() => setModeloSelecionado(index)}
               whileHover={{ x: 5 }}
               whileTap={{ scale: 0.98 }}
             >
@@ -224,29 +335,28 @@ function PaginaVisualizacao3D() {
           </InfoModelo>
 
           <Canvas camera={{ position: [5, 5, 5] }}>
-                <ambientLight intensity={0.5} />
-                <directionalLight position={[10, 15, 10]} intensity={1} castShadow />
-                <pointLight position={[-10, -10, -5]} intensity={0.5} color="#00d4ff" />
+            <ambientLight intensity={0.5} />
+            <directionalLight position={[10, 15, 10]} intensity={1} castShadow />
+            <pointLight position={[-10, -10, -5]} intensity={0.5} color="#00d4ff" />
 
-                <Suspense fallback={null}>
-                    <Environment preset="city" />
-                    <Bounds key={modeloAtual.id} fit clip observe margin={1.2}>
-                        <Center>
-                            <ModeloGLB caminho={modeloAtual.arquivo} />
-                        </Center>
-                    </Bounds>
-                </Suspense>
+            <Suspense fallback={null}>
+              <Environment preset="city" />
+              <Bounds key={modeloAtual.id} fit clip observe margin={1.2}>
+                <Center>
+                  <ModeloGLB caminho={modeloAtual.arquivo} />
+                </Center>
+              </Bounds>
+            </Suspense>
 
-                <OrbitControls
-                    key={modeloAtual.id}
-                    ref={orbitControlsRef}
-                    // TORNA ESTE O CONTROLE PADRÃO DA CÂMERA DO CANVAS
-                    makeDefault 
-                    enableZoom
-                    enablePan
-                    enableDamping
-                    dampingFactor={0.05}
-                />
+            <OrbitControls
+              key={modeloAtual.id}
+              ref={orbitControlsRef}
+              makeDefault
+              enableZoom
+              enablePan
+              enableDamping
+              dampingFactor={0.05}
+            />
           </Canvas>
 
           <Controles>
@@ -254,7 +364,6 @@ function PaginaVisualizacao3D() {
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
               title="Resetar visualização"
-              // Isso chamará a função resetarVisualizacao, que só reseta o OrbitControls
               onClick={resetarVisualizacao}
             >
               <RotateCw size={24} />
